@@ -49,9 +49,9 @@ int set_root_atoms(Pixmap pixmap) {
     return 1;
 }
 
-int load_image(const char *arg, int alpha, Imlib_Image rootimg,
+int load_image(const char *arg, Imlib_Image rootimg,
                XineramaScreenInfo *outputs, int noutputs) {
-    int img_w, img_h, o;
+    int img_w, img_h;
     Imlib_Image buffer = imlib_load_image(arg);
 
     if (!buffer)
@@ -60,21 +60,6 @@ int load_image(const char *arg, int alpha, Imlib_Image rootimg,
     imlib_context_set_image(buffer);
     img_w = imlib_image_get_width();
     img_h = imlib_image_get_height();
-
-    if (alpha < 255) {
-        imlib_image_set_has_alpha(1);
-        Imlib_Color_Modifier modifier = imlib_create_color_modifier();
-        imlib_context_set_color_modifier(modifier);
-
-        DATA8 red[256], green[256], blue[256], alph[256];
-        imlib_get_color_modifier_tables(red, green, blue, alph);
-        for (o = 0; o < 256; o++)
-            alph[o] = (DATA8)alpha;
-        imlib_set_color_modifier_tables(red, green, blue, alph);
-
-        imlib_apply_color_modifier();
-        imlib_free_color_modifier();
-    }
 
     imlib_context_set_image(rootimg);
 
@@ -100,7 +85,7 @@ int main(int argc, char **argv) {
     Visual *vis;
     Colormap cm;
     Imlib_Image image;
-    int width, height, depth, alpha;
+    int width, height, depth;
     Pixmap pixmap;
     Imlib_Color_Modifier modifier = NULL;
     unsigned long screen_mask = ~0;
@@ -166,12 +151,11 @@ int main(int argc, char **argv) {
         imlib_context_set_dither(1);
         imlib_context_set_blend(1);
 
-        alpha = 255;
-
         if (modifier != NULL) {
             imlib_apply_color_modifier();
             imlib_free_color_modifier();
         }
+
         modifier = imlib_create_color_modifier();
         imlib_context_set_color_modifier(modifier);
 
@@ -180,7 +164,7 @@ int main(int argc, char **argv) {
             continue;
         }
 
-        if (load_image(argv[1], alpha, image, outputs, noutputs) == 0) {
+        if (load_image(argv[1], image, outputs, noutputs) == 0) {
             fprintf(stderr, "Bad image (%s)\n", argv[1]);
             continue;
         }
