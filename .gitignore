@@ -54,3 +54,4 @@ dkms.conf
 
 # Other
 .cache
+.valgrind-report
