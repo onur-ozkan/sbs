@@ -17,7 +17,6 @@ int set_root_atoms(Pixmap pixmap) {
     atom_root = XInternAtom(display, "_XROOTPMAP_ID", True);
     atom_eroot = XInternAtom(display, "ESETROOT_PMAP_ID", True);
 
-    // doing this to clean up after old background
     if (atom_root != None && atom_eroot != None) {
         XGetWindowProperty(display, RootWindow(display, screen), atom_root, 0L,
                            1L, False, AnyPropertyType, &type, &format, &length,
@@ -40,7 +39,6 @@ int set_root_atoms(Pixmap pixmap) {
     if (atom_root == None || atom_eroot == None)
         return 0;
 
-    // setting new background atoms
     XChangeProperty(display, RootWindow(display, screen), atom_root, XA_PIXMAP,
                     32, PropModeReplace, (unsigned char *)&pixmap, 1);
     XChangeProperty(display, RootWindow(display, screen), atom_eroot, XA_PIXMAP,
@@ -94,8 +92,8 @@ int main(int argc, char **argv) {
     display = XOpenDisplay(NULL);
 
     if (!display) {
-        fprintf(stderr, "Cannot open X display!\n");
-        exit(123);
+        fprintf(stderr, "X display could not open!\n");
+        exit(EXIT_FAILURE);
     }
 
     int noutputs = 0;
@@ -115,7 +113,7 @@ int main(int argc, char **argv) {
         outputs = XineramaQueryScreens(display, &noutputs);
     }
 
-    for (/* global */ screen = 0; screen < ScreenCount(display); screen++) {
+    for (screen = 0; screen < ScreenCount(display); screen++) {
         if ((screen_mask & (1 << screen)) == 0)
             continue;
 
@@ -160,12 +158,14 @@ int main(int argc, char **argv) {
         imlib_context_set_color_modifier(modifier);
 
         if (argc < 2) {
-            fprintf(stderr, "Missing image\n");
+            // TODO:
+            // Show example usage
+            fprintf(stderr, "Missing an image,\n");
             continue;
         }
 
         if (load_image(argv[1], image, outputs, noutputs) == 0) {
-            fprintf(stderr, "Bad image (%s)\n", argv[1]);
+            fprintf(stderr, "Unsupported file (%s)\n", argv[1]);
             continue;
         }
 
@@ -181,7 +181,7 @@ int main(int argc, char **argv) {
         imlib_free_color_range();
 
         if (set_root_atoms(pixmap) == 0)
-            fprintf(stderr, "Couldn't create atoms...\n");
+            fprintf(stderr, "Application crashed!\n");
 
         XKillClient(display, AllTemporary);
         XSetCloseDownMode(display, RetainTemporary);
