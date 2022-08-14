@@ -3,7 +3,9 @@
 #include <X11/extensions/Xinerama.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include "config.h"
 #include <stdlib.h>
+#include <string.h>
 
 Display *display;
 int screen;
@@ -79,6 +81,12 @@ int load_image(const char *arg, Imlib_Image rootimg, XineramaScreenInfo * output
 	imlib_context_set_image(rootimg);
 
 	return 1;
+}
+
+void print_v_and_exit()
+{
+	printf("sbs version %s\n", VERSION);
+	exit(EXIT_SUCCESS);
 }
 
 int main(int argc, char **argv)
@@ -168,15 +176,19 @@ int main(int argc, char **argv)
 
 		if (argc < 2)
 		{
-			// TODO:
-			// Show example usage
-			fprintf(stderr, "Missing an image,\n");
+			fprintf(stderr, "sbs: Incorrect usage.\nsbs: Example usage: 'sbs ${image_path}'\n");
 			continue;
 		}
 
-		if (load_image(argv[1], image, outputs, noutputs) == 0)
+		if (strcmp(argv[1], VERSION_CMD) == 0)
 		{
-			fprintf(stderr, "Unsupported file (%s)\n", argv[1]);
+			print_v_and_exit();
+		}
+		else if (load_image(argv[1], image, outputs, noutputs) == 0)
+		{
+			fprintf(stderr,
+					"sbs: File is not supported.\nsbs: [%s] likely not even a image file.\n",
+					argv[1]);
 			continue;
 		}
 
@@ -193,7 +205,7 @@ int main(int argc, char **argv)
 		imlib_free_color_range();
 
 		if (set_root_atoms(pixmap) == 0)
-			fprintf(stderr, "Application crashed!\n");
+			fprintf(stderr, "sbs: Application crashed!\n");
 
 		XKillClient(display, AllTemporary);
 		XSetCloseDownMode(display, RetainTemporary);
