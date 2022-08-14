@@ -1,1 +1,3 @@
-check Makefile for development/building experience
+sbs - simple background setter
+============================
+check [Makefile](Makefile) for development or build experience
