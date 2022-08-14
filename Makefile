@@ -1,6 +1,3 @@
-.SILENT:
-.POSIX:
-
 include config.mk
 
 .c.o:
