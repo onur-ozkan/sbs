@@ -1,0 +1,10 @@
+All notable changes to this project will be documented in this file.
+Date format: yyyy/dd/mm
+
+2022-09-01 Onur Ozkan <work@onurozkan.dev>
+	* Project initialized with successful P.O.C work.
+
+2022-08-14 Onur Ozkan <work@onurozkan.dev>
+	* Semantic versioning implemented.
+  * Simple README file created.
+  * v1.0.0-stable released
