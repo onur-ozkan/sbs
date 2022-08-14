@@ -91,6 +91,17 @@ void print_v_and_exit()
 
 int main(int argc, char **argv)
 {
+	if (argc < 2)
+	{
+		fprintf(stderr, "sbs: Incorrect usage.\nsbs: Example usage: 'sbs ${image_path}'\n");
+		exit(EXIT_FAILURE);
+	}
+
+	if (strcmp(argv[1], VERSION_CMD) == 0)
+	{
+		print_v_and_exit();
+	}
+
 	Visual *vis;
 	Colormap cm;
 	Imlib_Image image;
@@ -174,17 +185,7 @@ int main(int argc, char **argv)
 		modifier = imlib_create_color_modifier();
 		imlib_context_set_color_modifier(modifier);
 
-		if (argc < 2)
-		{
-			fprintf(stderr, "sbs: Incorrect usage.\nsbs: Example usage: 'sbs ${image_path}'\n");
-			continue;
-		}
-
-		if (strcmp(argv[1], VERSION_CMD) == 0)
-		{
-			print_v_and_exit();
-		}
-		else if (load_image(argv[1], image, outputs, noutputs) == 0)
+		if (load_image(argv[1], image, outputs, noutputs) == 0)
 		{
 			fprintf(stderr,
 					"sbs: File is not supported.\nsbs: [%s] likely not even a image file.\n",
