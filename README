@@ -1,7 +1,12 @@
 sbs - simple background setter
 ============================
-check Makefile for development or build experience
 
-runtime dynamically loaded libraries:
+Check Makefile for development experience.
+
+Dynamically loaded libraries at runtime
   • libXinerama
   • imbli2
+
+Commands
+  • sbs --version
+  • sbs {path_to_image_file}
